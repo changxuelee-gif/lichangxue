@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>李昌雪 - 凤凰FM 技术总监</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
+html,body{width:100%;height:100%}
+body{background:#020814;color:#e6edf3;overflow-x:hidden}
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+.main{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:60px 20px;display:flex;flex-direction:column;align-items:center;text-align:center}
+
+.avatar{width:130px;height:130px;border-radius:50%;background:rgba(20,60,120,0.3);border:2px solid #0ef;box-shadow:0 0 30px #0ef,0 0 60px #00aaff;overflow:hidden;margin-bottom:24px}
+.avatar img{width:100%;height:100%;object-fit:cover}
+
+h1{font-size:42px;font-weight:700;background:linear-gradient(90deg,#0ef,#00aaff,#80fbff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.bio{font-size:18px;color:#a0bfff;margin-bottom:36px;opacity:.9}
+
+.panel{background:rgba(10,20,45,.7);backdrop-filter:blur(12px);border:1px solid rgba(0,200,255,.2);border-radius:20px;padding:36px;width:100%;box-shadow:0 0 50px rgba(0,100,255,.15);margin-bottom:30px}
+.item{margin-bottom:28px}
+.item h3{display:flex;align-items:center;justify-content:center;gap:10px;font-size:19px;color:#0ef;margin-bottom:16px}
+
+.tags{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.tag{background:rgba(0,80,150,.2);border:1px solid rgba(0,180,255,.3);color:#cfefff;padding:8px 14px;border-radius:30px;font-size:14px}
+
+.links{display:flex;flex-direction:column;gap:10px}
+.links a{color:#cfefff;text-decoration:none;background:rgba(0,100,180,.2);border:1px solid rgba(0,180,255,.3);padding:10px 18px;border-radius:12px;transition:.3s}
+.links a:hover{transform:translateY(-2px);border-color:#0ef}
+
+/* 文章列表样式 */
+.article-list{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.article-item{background:rgba(0,100,180,.15);border:1px solid rgba(0,180,255,.25);padding:14px 18px;border-radius:12px;text-align:left}
+.article-item a{color:#e6edf3;text-decoration:none;font-size:16px}
+.article-item a:hover{color:#0ef}
+
+/* 添加文章按钮 */
+#addBtn{margin-top:10px;padding:10px 20px;background:#0ef;color:#000;border:none;border-radius:12px;cursor:pointer;font-weight:bold}
+#addBtn:hover{opacity:.8}
+
+/* 弹窗 */
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;justify-content:center;align-items:center;z-index:999}
+.modal-content{background:#102035;padding:30px;border-radius:16px;border:1px solid #0ef;width:90%;max-width:450px}
+.modal-content input{width:100%;margin:8px 0;padding:12px;border-radius:8px;background:#051020;border:1px solid #0ef;color:#fff}
+.modal-buttons{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.modal-buttons button{padding:8px 16px;border-radius:8px;border:none;cursor:pointer}
+#saveArticle{background:#0ef;color:#000}
+#closeModal{background:#333;color:#fff}
+</style>
+</head>
+
+<body>
+<div id="particles"></div>
+<div class="main">
+
+  <div class="avatar">
+    <img src="https://picsum.photos/200/200" alt="李昌雪" />
+  </div>
+  <h1>李昌雪</h1>
+  <div class="bio">凤凰FM 技术总监 | 2008 入行全栈技术老兵</div>
+
+  <!-- 信息面板 -->
+  <div class="panel">
+    <div class="item">
+      <h3>💻 技术栈</h3>
+      <div class="tags">
+        <span class="tag">.NET</span><span class="tag">PHP</span><span class="tag">Java</span><span class="tag">Python</span>
+        <span class="tag">MySQL</span><span class="tag">Redis</span><span class="tag">ES</span>
+        <span class="tag">阿里云</span><span class="tag">腾讯云</span><span class="tag">Azure</span>
+      </div>
+    </div>
+
+    <div class="item">
+      <h3>🎯 擅长领域</h3>
+      <div class="tags">
+        <span class="tag">音视频架构</span><span class="tag">高并发系统</span><span class="tag">多云运维</span>
+        <span class="tag">团队管理</span><span class="tag">稳定性建设</span>
+      </div>
+    </div>
+
+    <div class="item">
+      <h3>📝 技术主页</h3>
+      <div class="links">
+        <a href="#">InfoQ 主页</a>
+        <a href="#">掘金 主页</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 文章列表面板 -->
+  <div class="panel">
+    <h3>📄 技术文章列表</h3>
+    <div id="articleList" class="article-list"></div>
+    <button id="addBtn">+ 添加文章</button>
+  </div>
+</div>
+
+<!-- 弹窗 -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3 style="color:#0ef;margin-bottom:12px">添加文章</h3>
+    <input id="artTitle" placeholder="文章标题">
+    <input id="artUrl" placeholder="文章链接">
+    <div class="modal-buttons">
+      <button id="closeModal">取消</button>
+      <button id="saveArticle">保存</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+// 粒子背景
+particlesJS("particles",{
+  particles:{number:{value:80},color:{value:"#0ef"},opacity:{value:0.6},size:{value:3},
+    line_linked:{enable:true,distance:120,color:"#00aaff",opacity:0.3,width:1},
+    move:{enable:true,speed:1,random:true}
+  },
+  interactivity:{events:{onhover:{enable:true,mode:"grab"}}},
+  retina_detect:true
+})
+
+// 文章本地存储 + 渲染
+const articleList = document.getElementById('articleList');
+const addBtn = document.getElementById('addBtn');
+const modal = document.getElementById('modal');
+const saveBtn = document.getElementById('saveArticle');
+const closeBtn = document.getElementById('closeModal');
+
+function renderArticles(){
+  const list = JSON.parse(localStorage.getItem('articles') || '[]');
+  articleList.innerHTML = list.map((i,idx)=>`
+    <div class="article-item">
+      <a href="${i.url}" target="_blank">${i.title}</a>
+    </div>
+  `).join('');
+}
+
+addBtn.onclick=()=>modal.style.display='flex';
+closeBtn.onclick=()=>modal.style.display='none';
+saveBtn.onclick=()=>{
+  const t = document.getElementById('artTitle').value.trim();
+  const u = document.getElementById('artUrl').value.trim();
+  if(!t||!u)return alert('请填写完整');
+  const list = JSON.parse(localStorage.getItem('articles')||'[]');
+  list.unshift({title:t,url:u});
+  localStorage.setItem('articles',JSON.stringify(list));
+  renderArticles();
+  modal.style.display='none';
+  document.getElementById('artTitle').value='';
+  document.getElementById('artUrl').value='';
+}
+
+renderArticles();
+</script>
+</body>
+</html>
